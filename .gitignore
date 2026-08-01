@@ -1,0 +1,21 @@
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Node modules & build artifacts
+node_modules/
+frontend/node_modules/
+dist/
+build/
+.vite/
+
+# Workspace & user files
+data/workspaces/
+*.pyc
+__pycache__/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
