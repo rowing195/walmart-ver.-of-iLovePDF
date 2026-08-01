@@ -52,10 +52,10 @@ class PDFService:
             return target_thumbnail_path
 
         if PDFService.is_image_file(file_path):
-            # Convert image to resized thumbnail WebP
+            # Convert image to resized thumbnail PNG
             with Image.open(file_path) as img:
                 img.thumbnail((300, 400))
-                img.save(target_thumbnail_path, format="WEBP", quality=80)
+                img.save(target_thumbnail_path, format="PNG")
             return target_thumbnail_path
 
         # Render PDF page thumbnail

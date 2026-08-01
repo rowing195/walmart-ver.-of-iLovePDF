@@ -55,11 +55,11 @@ async def get_page_thumbnail(session_id: str, saved_name: str, page_index: int):
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="File not found")
 
-    thumb_name = f"{saved_name}_p{page_index}.webp"
+    thumb_name = f"{saved_name}_p{page_index}.png"
     target_thumb_path = ws_path / "thumbnails" / thumb_name
 
     try:
         thumb_path = PDFService.render_thumbnail(file_path, page_index, target_thumb_path)
-        return FileResponse(thumb_path, media_type="image/webp")
+        return FileResponse(thumb_path, media_type="image/png")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to render thumbnail: {str(e)}")
