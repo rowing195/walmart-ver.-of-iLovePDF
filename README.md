@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<h1 align="center">📄 PDF Craft</h1>
+<h1 align="center">📄 walmart version of iLovePDF</h1>
 <p align="center">
   <em>High-Performance Visual PDF & Image Workbench Powered by PyMuPDF & React</em>
 </p>
