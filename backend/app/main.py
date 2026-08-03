@@ -10,11 +10,12 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS middleware for local development
+# CORS middleware for local development.
+# No cookies/session auth are used, so credentials aren't needed here — that
+# combined with a wildcard origin would violate the CORS spec anyway.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

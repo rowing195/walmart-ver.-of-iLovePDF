@@ -5,6 +5,8 @@ from typing import List, Dict, Any, Tuple
 import fitz  # PyMuPDF
 from PIL import Image
 
+from app.services.workspace_service import WorkspaceService
+
 class PDFService:
     @staticmethod
     def is_image_file(file_path: Path) -> bool:
@@ -84,15 +86,14 @@ class PDFService:
         Each node format: {"saved_name": "xxx.pdf", "page_index": 0, "rotation": 90}
         """
         out_doc = fitz.open()
-        uploads_dir = workspace_path / "uploads"
 
         for node in page_nodes:
             saved_name = node["saved_name"]
             page_index = node.get("page_index", 0)
             rotation = node.get("rotation", 0) % 360
 
-            file_path = uploads_dir / saved_name
-            if not file_path.exists():
+            file_path = WorkspaceService.resolve_upload_path(workspace_path, saved_name)
+            if not file_path or not file_path.exists():
                 continue
 
             if PDFService.is_image_file(file_path):
@@ -127,7 +128,6 @@ class PDFService:
         Render selected page_nodes into PNG images and pack into a ZIP file.
         """
         zip_path = workspace_path / "exports" / "extracted_images.zip"
-        uploads_dir = workspace_path / "uploads"
 
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
             for idx, node in enumerate(page_nodes):
@@ -135,8 +135,8 @@ class PDFService:
                 page_index = node.get("page_index", 0)
                 rotation = node.get("rotation", 0) % 360
 
-                file_path = uploads_dir / saved_name
-                if not file_path.exists():
+                file_path = WorkspaceService.resolve_upload_path(workspace_path, saved_name)
+                if not file_path or not file_path.exists():
                     continue
 
                 if PDFService.is_image_file(file_path):

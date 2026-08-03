@@ -1,17 +1,27 @@
+import logging
 from typing import List, Dict, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
+from app.core.config import is_valid_saved_name
 from app.services.workspace_service import WorkspaceService
 from app.services.pdf_service import PDFService
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 class PageNodeModel(BaseModel):
     saved_name: str
     page_index: int = 0
     rotation: int = 0
+
+    @field_validator("saved_name")
+    @classmethod
+    def validate_saved_name(cls, v: str) -> str:
+        if not is_valid_saved_name(v):
+            raise ValueError("saved_name must be a server-generated document filename")
+        return v
 
 class ExportRequest(BaseModel):
     session_id: str
@@ -37,8 +47,9 @@ async def export_pdf(req: ExportRequest):
             media_type="application/pdf",
             filename="compiled_output.pdf"
         )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to export PDF: {str(e)}")
+    except Exception:
+        logger.exception("Failed to export PDF for session %s", req.session_id)
+        raise HTTPException(status_code=500, detail="Failed to export PDF")
 
 @router.post("/images")
 async def export_images(req: ExportRequest):
@@ -60,5 +71,6 @@ async def export_images(req: ExportRequest):
             media_type="application/zip",
             filename="extracted_pages.zip"
         )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to export images: {str(e)}")
+    except Exception:
+        logger.exception("Failed to export images ZIP for session %s", req.session_id)
+        raise HTTPException(status_code=500, detail="Failed to export images")
