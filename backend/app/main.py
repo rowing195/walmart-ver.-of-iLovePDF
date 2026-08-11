@@ -5,7 +5,7 @@ from app.api.router import api_router
 from app.core.cleanup import workspace_cleanup_loop
 
 app = FastAPI(
-    title="PDF Craft API",
+    title="Walmart Version of iLovePDF API",
     description="High-performance PDF and Image workbench API powered by PyMuPDF",
     version="1.0.0"
 )
@@ -29,4 +29,4 @@ async def startup_event():
 
 @app.get("/")
 def read_root():
-    return {"message": "PDF Craft API Service is running."}
+    return {"message": "Walmart Version of iLovePDF API Service is running."}

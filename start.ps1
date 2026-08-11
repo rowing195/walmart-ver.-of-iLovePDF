@@ -2,7 +2,7 @@ $ErrorActionPreference = "Stop"
 $RootDir = $PSScriptRoot
 
 Write-Host "========================================================" -ForegroundColor Cyan
-Write-Host "              PDF Craft PowerShell Launcher" -ForegroundColor Cyan
+Write-Host "              Walmart Version of iLovePDF PowerShell Launcher" -ForegroundColor Cyan
 Write-Host "========================================================" -ForegroundColor Cyan
 Write-Host ""
 

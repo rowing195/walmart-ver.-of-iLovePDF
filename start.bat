@@ -1,8 +1,8 @@
 @echo off
 chcp 65001 >nul
-title PDF Craft Launcher
+title Walmart Version of iLovePDF Launcher
 echo ========================================================
-echo               PDF Craft Startup Script
+echo               Walmart Version of iLovePDF Startup Script
 echo ========================================================
 echo.
 
@@ -53,10 +53,10 @@ echo ========================================================
 echo.
 
 :: Launch Backend
-start "PDF Craft Backend" cmd /k "cd /d %~dp0backend && %~dp0.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000"
+start "Walmart Version of iLovePDF Backend" cmd /k "cd /d %~dp0backend && %~dp0.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000"
 
 :: Launch Frontend
-start "PDF Craft Frontend" cmd /k "cd /d %~dp0frontend && call npm.cmd run dev"
+start "Walmart Version of iLovePDF Frontend" cmd /k "cd /d %~dp0frontend && call npm.cmd run dev"
 
 :: Delay for servers to initialize
 ping 127.0.0.1 -n 4 >nul
@@ -64,6 +64,6 @@ ping 127.0.0.1 -n 4 >nul
 :: Open Browser
 start http://localhost:5173
 
-echo PDF Craft is running! You can minimize this window.
+echo Walmart Version of iLovePDF is running! You can minimize this window.
 echo.
 pause

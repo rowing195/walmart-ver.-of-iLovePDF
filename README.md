@@ -41,9 +41,9 @@
 
 ## 🌟 Overview
 
-**PDF Craft** is an iLovePDF-like open-source web workbench designed for visual PDF page manipulation, reordering, splitting, merging, rotating, image conversion, and extraction. 
+**walmart version of iLovePDF** is an iLovePDF-like open-source web workbench designed for visual PDF page manipulation, reordering, splitting, merging, rotating, image conversion, and extraction. 
 
-Unlike conventional PDF tools that require typing page numbers, **PDF Craft** provides an interactive **Visual Canvas** where every page of uploaded PDFs and images is rendered on the fly as thumbnail cards. Users can visually select, drag-and-drop to reorder, rotate, insert images, and export custom PDFs or ZIP image packages with ease.
+Unlike conventional PDF tools that require typing page numbers, **walmart version of iLovePDF** provides an interactive **Visual Canvas** where every page of uploaded PDFs and images is rendered on the fly as thumbnail cards. Users can visually select, drag-and-drop to reorder, rotate, insert images, and export custom PDFs or ZIP image packages with ease.
 
 ---
 
@@ -172,7 +172,7 @@ Open `http://localhost:5173` in your browser.
 
 ## 🏛️ Architecture Decisions (ADR)
 
-The key design choices behind PDF Craft are documented in the [docs/adr](file:///C:/Users/yiya0/.gemini/antigravity/scratch/ilovepdf-clone/docs/adr) directory:
+The key design choices behind walmart version of iLovePDF are documented in the [docs/adr](file:///C:/Users/yiya0/.gemini/antigravity/scratch/ilovepdf-clone/docs/adr) directory:
 
 - [ADR 0001: Server-side Thumbnail Rendering with PyMuPDF](file:///C:/Users/yiya0/.gemini/antigravity/scratch/ilovepdf-clone/docs/adr/0001-server-side-thumbnail-rendering-with-pymupdf.md)
 - [ADR 0002: Ephemeral Local Session Storage without Database](file:///C:/Users/yiya0/.gemini/antigravity/scratch/ilovepdf-clone/docs/adr/0002-ephemeral-local-session-storage.md)

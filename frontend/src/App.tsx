@@ -182,7 +182,7 @@ export function App() {
             </div>
             <div>
               <h1 className="text-xl font-extrabold tracking-tight text-white font-heading">
-                PDF Craft
+                Walmart Version of iLovePDF
               </h1>
               <p className="text-[10px] font-medium text-indigo-400 uppercase tracking-widest">
                 Visual PDF & Image Workbench
@@ -264,7 +264,7 @@ export function App() {
 
       {/* Footer */}
       <footer className="border-t border-slate-800/60 py-4 text-center text-xs text-slate-400">
-        PDF Craft &copy; 2026. Ephemeral Local Workspace.
+        Walmart Version of iLovePDF &copy; 2026. Ephemeral Local Workspace.
       </footer>
     </div>
   );

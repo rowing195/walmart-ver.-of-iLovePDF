@@ -5,7 +5,7 @@ ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "$ROOT_DIR"
 
 echo "========================================================"
-echo "              PDF Craft Bash Launcher"
+echo "              Walmart Version of iLovePDF Bash Launcher"
 echo "========================================================"
 
 if [ ! -d ".venv" ]; then
