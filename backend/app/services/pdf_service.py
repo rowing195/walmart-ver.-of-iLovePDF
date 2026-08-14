@@ -117,7 +117,9 @@ class PDFService:
                 current_rot = last_page.rotation
                 last_page.set_rotation((current_rot + rotation) % 360)
 
-        output_path = workspace_path / "exports" / "compiled.pdf"
+        output_dir = workspace_path / "exports"
+        output_dir.mkdir(exist_ok=True)
+        output_path = output_dir / "compiled.pdf"
         out_doc.save(str(output_path), garbage=4, deflate=True)
         out_doc.close()
         return output_path
@@ -127,7 +129,9 @@ class PDFService:
         """
         Render selected page_nodes into PNG images and pack into a ZIP file.
         """
-        zip_path = workspace_path / "exports" / "extracted_images.zip"
+        output_dir = workspace_path / "exports"
+        output_dir.mkdir(exist_ok=True)
+        zip_path = output_dir / "extracted_images.zip"
 
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
             for idx, node in enumerate(page_nodes):

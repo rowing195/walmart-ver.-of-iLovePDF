@@ -1,9 +1,19 @@
 import os
 import re
+import sys
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DATA_DIR = BASE_DIR / "data"
+if getattr(sys, "frozen", False):
+    # Bundled read-only assets live in the PyInstaller extraction dir, which is
+    # wiped on exit — user data has to go somewhere persistent and writable.
+    STATIC_DIR = Path(sys._MEIPASS) / "dist"
+    _app_data = os.environ.get("LOCALAPPDATA") or (Path.home() / ".local" / "share")
+    DATA_DIR = Path(_app_data) / "WalmartPDF"
+else:
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent
+    STATIC_DIR = BASE_DIR.parent / "frontend" / "dist"
+    DATA_DIR = BASE_DIR / "data"
+
 WORKSPACES_DIR = DATA_DIR / "workspaces"
 
 # Create storage directory if it doesn't exist

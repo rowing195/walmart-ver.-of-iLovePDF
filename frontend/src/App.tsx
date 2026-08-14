@@ -83,6 +83,13 @@ export function App() {
     setPageNodes((prev) => prev.map((n) => ({ ...n, selected: shouldSelectAll })));
   };
 
+  const handleSelectPages = (pageNumbers: Set<number>) => {
+    // Page numbers are 1-based canvas positions, matching the "Page N" badge.
+    setPageNodes((prev) =>
+      prev.map((n, i) => ({ ...n, selected: pageNumbers.has(i + 1) }))
+    );
+  };
+
   const handleRotateSelected = (deltaAngle: number) => {
     setPageNodes((prev) =>
       prev.map((n) =>
@@ -241,6 +248,7 @@ export function App() {
               selectedCount={selectedCount}
               onAddFiles={handleFilesSelected}
               onSelectAllToggle={handleSelectAllToggle}
+              onSelectPages={handleSelectPages}
               onRotateSelected={handleRotateSelected}
               onDeleteSelected={handleDeleteSelected}
               onExportPdf={handleExportPdf}

@@ -52,11 +52,16 @@ echo - Frontend: http://localhost:5173
 echo ========================================================
 echo.
 
-:: Launch Backend
-start "Walmart Version of iLovePDF Backend" cmd /k "cd /d %~dp0backend && %~dp0.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000"
+:: Launch Backend and Frontend. `start /d` sets the working directory, which
+:: avoids nesting quoted paths inside `cmd /k` — that broke on any path
+:: containing a space.
+set "PY=%ROOT_DIR%.venv\Scripts\python.exe"
 
-:: Launch Frontend
-start "Walmart Version of iLovePDF Frontend" cmd /k "cd /d %~dp0frontend && call npm.cmd run dev"
+:: `cmd /s /k` keeps the window open on crash so the traceback stays readable;
+:: /s makes cmd strip only the outer quotes, leaving the quoted exe path intact.
+start "Walmart Version of iLovePDF Backend" /d "%ROOT_DIR%backend" cmd /s /k ""%PY%" -m uvicorn app.main:app --reload --port 8000"
+
+start "Walmart Version of iLovePDF Frontend" /d "%ROOT_DIR%frontend" cmd /s /k "npm.cmd run dev"
 
 :: Delay for servers to initialize
 ping 127.0.0.1 -n 4 >nul
