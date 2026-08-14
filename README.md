@@ -24,7 +24,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Architecture](#architecture)
@@ -40,7 +40,7 @@
 
 ---
 
-## 🌟 Overview
+## Overview
 
 **walmart version of iLovePDF** is an iLovePDF-like open-source web workbench designed for visual PDF page manipulation, reordering, splitting, merging, rotating, image conversion, and extraction. 
 
@@ -48,7 +48,7 @@ Unlike conventional PDF tools that require typing page numbers, **walmart versio
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 graph TD
@@ -67,7 +67,7 @@ graph TD
 
 ---
 
-## ✨ Features
+## Features
 
 - 🖼️ **Visual Page Selector Grid**: Real-time server-side thumbnail rendering powered by PyMuPDF (`fitz`).
 - 🔀 **Drag-and-Drop Page Reordering**: Effortlessly reorder pages across multiple PDFs using `@dnd-kit`.
@@ -81,7 +81,7 @@ graph TD
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```sh
 ilovepdf-clone/
@@ -121,7 +121,7 @@ ilovepdf-clone/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Option A: Windows App (.exe)
 
@@ -201,7 +201,7 @@ Open `http://localhost:5173` in your browser.
 
 ---
 
-## 📦 Building the Windows Executable
+## Building the Windows Executable
 
 From the project root, in PowerShell:
 
@@ -252,7 +252,7 @@ the change is final.
 
 ---
 
-## 🏛️ Architecture Decisions (ADR)
+## Architecture Decisions (ADR)
 
 The key design choices behind walmart version of iLovePDF are documented in the [docs/adr](docs/adr) directory:
 
@@ -263,6 +263,6 @@ The key design choices behind walmart version of iLovePDF are documented in the 
 
 ---
 
-## 📄 License
+## License
 
 This project is open-source under the [MIT License](LICENSE).
