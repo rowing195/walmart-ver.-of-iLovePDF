@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import {
+  RotateCcw,
   RotateCw,
   Plus,
   CheckSquare,
@@ -10,6 +11,7 @@ import {
   Hash,
 } from 'lucide-react';
 import { PageNode } from '../../types';
+import { Tooltip } from '../Tooltip';
 
 /**
  * Parse a page range expression like "1-5, 8, 12-20" into 1-based page numbers
@@ -86,6 +88,7 @@ export const ActionsToolbar: React.FC<ActionsToolbarProps> = ({
   const [rangeInvalid, setRangeInvalid] = useState(false);
   const totalCount = pageNodes.length;
   const allSelected = totalCount > 0 && selectedCount === totalCount;
+  const hasSelection = selectedCount > 0;
 
   const handleRangeChange = (value: string) => {
     setRangeInput(value);
@@ -101,7 +104,7 @@ export const ActionsToolbar: React.FC<ActionsToolbarProps> = ({
   };
 
   return (
-    <div className="sticky top-4 z-40 mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl p-4 shadow-2xl glass-panel">
+    <div className="relative z-20 flex h-[46px] shrink-0 items-center justify-between gap-3 border-b border-[#26292f] bg-[#1a1d22] px-4">
       <input
         ref={addFilesInputRef}
         type="file"
@@ -112,113 +115,124 @@ export const ActionsToolbar: React.FC<ActionsToolbarProps> = ({
       />
 
       {/* Left Group: Insert Files & Selection */}
-      <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={() => addFilesInputRef.current?.click()}
-          className="flex items-center space-x-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-indigo-500 active:scale-95 shadow-md shadow-indigo-600/30"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Insert PDF / Images</span>
-        </button>
+      <div className="flex items-center gap-1.5">
+        <Tooltip label="插入 PDF 或圖片檔案，可一次選取多個">
+          <button
+            type="button"
+            onClick={() => addFilesInputRef.current?.click()}
+            className="flex items-center gap-1.5 rounded-md bg-[#3b9eff] px-2.5 py-1.5 text-xs font-semibold text-[#0b1220] transition-colors hover:bg-[#63b1ff]"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>Insert</span>
+          </button>
+        </Tooltip>
 
-        <div className="h-6 w-[1px] bg-slate-800 mx-1 hidden sm:block" />
+        <div className="mx-1 h-5 w-px bg-[#2a2e35]" />
 
-        <button
-          type="button"
-          onClick={onSelectAllToggle}
-          className="flex items-center space-x-1.5 rounded-xl border border-slate-700 bg-slate-800/80 px-3 py-2 text-xs font-medium text-slate-200 transition-all hover:border-slate-600 hover:bg-slate-800"
-        >
-          {allSelected ? (
-            <CheckSquare className="h-4 w-4 text-indigo-400" />
-          ) : (
-            <Square className="h-4 w-4 text-slate-400" />
-          )}
-          <span>{allSelected ? 'Deselect All' : 'Select All'}</span>
-        </button>
+        <Tooltip label="全選 / 取消全選所有頁面">
+          <button
+            type="button"
+            onClick={onSelectAllToggle}
+            disabled={totalCount === 0}
+            aria-label="全選 / 取消全選所有頁面"
+            className="flex h-7 w-7 items-center justify-center rounded-md border border-[#2a2e35] bg-[#21262d] text-[#c7cbd1] transition-colors hover:bg-[#282e36] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {allSelected ? <CheckSquare className="h-3.5 w-3.5 text-[#3b9eff]" /> : <Square className="h-3.5 w-3.5" />}
+          </button>
+        </Tooltip>
 
-        <div className="relative flex items-center">
-          <Hash
-            className={`pointer-events-none absolute left-2.5 h-3.5 w-3.5 ${
-              rangeInvalid ? 'text-rose-400' : 'text-slate-500'
-            }`}
-          />
-          <input
-            type="text"
-            value={rangeInput}
-            onChange={(e) => handleRangeChange(e.target.value)}
-            placeholder="Select pages, e.g. 1-5, 8"
-            aria-label="Select pages by number, for example 1-5, 8, 12-20"
-            aria-invalid={rangeInvalid}
-            title="Type page numbers to select them, e.g. 1-5, 8, 12-20"
-            className={`w-52 rounded-xl border bg-slate-800/80 py-2 pl-8 pr-3 text-xs font-medium text-slate-200 placeholder:text-slate-500 transition-all focus:outline-none focus:ring-2 ${
-              rangeInvalid
-                ? 'border-rose-800 focus:border-rose-700 focus:ring-rose-500/30'
-                : 'border-slate-700 hover:border-slate-600 focus:border-indigo-600 focus:ring-indigo-500/30'
-            }`}
-          />
-        </div>
+        <Tooltip label="輸入頁碼範圍選取，例如 1-5, 8, 12-20">
+          <div className="relative flex items-center">
+            <Hash
+              className={`pointer-events-none absolute left-2 h-3 w-3 ${
+                rangeInvalid ? 'text-[#f27272]' : 'text-[#565c65]'
+              }`}
+            />
+            <input
+              type="text"
+              value={rangeInput}
+              onChange={(e) => handleRangeChange(e.target.value)}
+              placeholder="e.g. 1-5, 8"
+              aria-label="輸入頁碼範圍選取，例如 1-5, 8, 12-20"
+              aria-invalid={rangeInvalid}
+              className={`w-32 rounded-md border bg-[#21262d] py-1.5 pl-6 pr-2 font-mono text-[11px] text-[#c7cbd1] placeholder:text-[#565c65] transition-colors focus:outline-none focus:ring-1 ${
+                rangeInvalid
+                  ? 'border-[#3a2a2a] focus:border-[#f27272] focus:ring-[#f27272]/40'
+                  : 'border-[#2a2e35] hover:border-[#3a3f47] focus:border-[#3b9eff] focus:ring-[#3b9eff]/40'
+              }`}
+            />
+          </div>
+        </Tooltip>
 
-        {selectedCount > 0 && (
-          <>
-            <button
-              type="button"
-              onClick={() => onRotateSelected(90)}
-              className="flex items-center space-x-1.5 rounded-xl border border-slate-700 bg-slate-800/80 px-3 py-2 text-xs font-medium text-slate-200 transition-all hover:border-slate-600 hover:bg-slate-800"
-            >
-              <RotateCw className="h-4 w-4 text-indigo-400" />
-              <span>Rotate ({selectedCount})</span>
-            </button>
+        <div className="mx-1 h-5 w-px bg-[#2a2e35]" />
 
-            <button
-              type="button"
-              onClick={onDeleteSelected}
-              className="flex items-center space-x-1.5 rounded-xl border border-rose-900/60 bg-rose-950/40 px-3 py-2 text-xs font-medium text-rose-300 transition-all hover:bg-rose-900/60"
-            >
-              <Trash className="h-4 w-4 text-rose-400" />
-              <span>Delete ({selectedCount})</span>
-            </button>
-          </>
-        )}
+        <Tooltip label="將選取頁面逆時針旋轉 90°">
+          <button
+            type="button"
+            onClick={() => onRotateSelected(-90)}
+            disabled={!hasSelection}
+            aria-label="將選取頁面逆時針旋轉 90 度"
+            className="flex h-7 w-7 items-center justify-center rounded-md border border-[#2a2e35] bg-[#21262d] text-[#c7cbd1] transition-colors hover:bg-[#282e36] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+          </button>
+        </Tooltip>
+
+        <Tooltip label="將選取頁面順時針旋轉 90°">
+          <button
+            type="button"
+            onClick={() => onRotateSelected(90)}
+            disabled={!hasSelection}
+            aria-label="將選取頁面順時針旋轉 90 度"
+            className="flex h-7 w-7 items-center justify-center rounded-md border border-[#2a2e35] bg-[#21262d] text-[#c7cbd1] transition-colors hover:bg-[#282e36] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <RotateCw className="h-3.5 w-3.5" />
+          </button>
+        </Tooltip>
+
+        <Tooltip label="刪除選取的頁面（無法復原）">
+          <button
+            type="button"
+            onClick={onDeleteSelected}
+            disabled={!hasSelection}
+            aria-label="刪除選取的頁面"
+            className="flex h-7 w-7 items-center justify-center rounded-md border border-[#3a2a2a] bg-[#241a1a] text-[#f27272] transition-colors hover:bg-[#2c1f1f] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Trash className="h-3.5 w-3.5" />
+          </button>
+        </Tooltip>
       </div>
 
       {/* Right Group: Stats & Export Actions */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="text-xs text-slate-400 hidden lg:block">
-          <span className="font-semibold text-indigo-400">{selectedCount}</span> of{' '}
-          <span className="font-semibold text-slate-200">{totalCount}</span> pages selected
+      <div className="flex items-center gap-3">
+        <div className="hidden font-mono text-[11px] text-[#6b7280] lg:block">
+          <span className="text-[#c7cbd1]">{selectedCount}</span> / <span className="text-[#c7cbd1]">{totalCount}</span> selected
         </div>
 
-        <div className="flex items-center space-x-2">
-          {/* Export PDF Button */}
-          <button
-            type="button"
-            disabled={isExporting || totalCount === 0}
-            onClick={() => onExportPdf(selectedCount > 0)}
-            className="flex items-center space-x-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-900/30"
-          >
-            <FileDown className="h-4 w-4" />
-            <span>
-              {selectedCount > 0
-                ? `Export PDF (${selectedCount} Selected)`
-                : 'Export Merged PDF'}
-            </span>
-          </button>
+        <div className="flex items-center gap-1.5">
+          <Tooltip label="依目前順序與旋轉狀態，匯出合併後的 PDF">
+            <button
+              type="button"
+              disabled={isExporting || totalCount === 0}
+              onClick={() => onExportPdf(selectedCount > 0)}
+              className="flex items-center gap-1.5 rounded-md bg-[#1f9d6c] px-2.5 py-1.5 text-xs font-semibold text-[#0b1220] transition-colors hover:bg-[#28b47d] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <FileDown className="h-3.5 w-3.5" />
+              <span>Export PDF{selectedCount > 0 ? ` (${selectedCount})` : ''}</span>
+            </button>
+          </Tooltip>
 
-          {/* Export ZIP Images Button */}
-          <button
-            type="button"
-            disabled={isExporting || totalCount === 0}
-            onClick={() => onExportImages(selectedCount > 0)}
-            className="flex items-center space-x-2 rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-200 transition-all hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Archive className="h-4 w-4 text-amber-400" />
-            <span>
-              {selectedCount > 0
-                ? `Extract Images ZIP (${selectedCount})`
-                : 'Extract Images ZIP'}
-            </span>
-          </button>
+          <Tooltip label="將選取頁面另存為 PNG 圖片壓縮包">
+            <button
+              type="button"
+              disabled={isExporting || totalCount === 0}
+              onClick={() => onExportImages(selectedCount > 0)}
+              className="flex items-center gap-1.5 rounded-md border border-[#2a2e35] bg-[#21262d] px-2.5 py-1.5 text-xs font-semibold text-[#c7cbd1] transition-colors hover:bg-[#282e36] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <Archive className="h-3.5 w-3.5" />
+              <span>ZIP{selectedCount > 0 ? ` (${selectedCount})` : ''}</span>
+            </button>
+          </Tooltip>
         </div>
       </div>
     </div>

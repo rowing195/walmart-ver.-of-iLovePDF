@@ -31,7 +31,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ onFilesSelected, isU
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       onClick={() => fileInputRef.current?.click()}
-      className="group relative cursor-pointer rounded-2xl border-2 border-dashed border-indigo-500/30 bg-slate-900/60 p-8 text-center transition-all hover:border-indigo-500/70 hover:bg-slate-900/90 glass-panel"
+      className="group relative flex flex-1 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-[#2a2e35] bg-[#1c1f24] text-center transition-colors hover:border-[#3b9eff]/60 hover:bg-[#1f2329]"
     >
       <input
         ref={fileInputRef}
@@ -42,31 +42,31 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ onFilesSelected, isU
         className="hidden"
       />
 
-      <div className="flex flex-col items-center justify-center space-y-4">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-600/20 text-indigo-400 group-hover:scale-110 group-hover:bg-indigo-600/30 transition-all">
+      <div className="flex flex-col items-center justify-center space-y-6">
+        <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#3b9eff]/10 text-[#3b9eff] transition-transform group-hover:scale-110 group-hover:bg-[#3b9eff]/15">
           {isUploading ? (
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-400 border-t-transparent" />
+            <div className="h-11 w-11 animate-spin rounded-full border-[3px] border-[#3b9eff] border-t-transparent" />
           ) : (
-            <Upload className="h-8 w-8" />
+            <Upload className="h-11 w-11" />
           )}
         </div>
 
         <div>
-          <h3 className="text-xl font-semibold text-slate-100 font-heading">
+          <h3 className="text-2xl font-semibold text-[#e5e7eb]">
             {isUploading ? 'Uploading & Rendering Pages...' : 'Drop PDF or Image files here'}
           </h3>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-[#8b929c]">
             Support PDF documents, PNG, JPG, WebP image files.
           </p>
         </div>
 
-        <div className="flex items-center space-x-6 text-xs text-slate-400 pt-2">
+        <div className="flex items-center space-x-6 pt-2 text-xs text-[#6b7280]">
           <span className="flex items-center space-x-1">
-            <FileText className="h-4 w-4 text-indigo-400" />
+            <FileText className="h-4 w-4 text-[#3b9eff]" />
             <span>PDF Processing</span>
           </span>
           <span className="flex items-center space-x-1">
-            <ImageIcon className="h-4 w-4 text-emerald-400" />
+            <ImageIcon className="h-4 w-4 text-[#1f9d6c]" />
             <span>Image Conversion</span>
           </span>
         </div>

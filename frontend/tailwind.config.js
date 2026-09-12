@@ -15,7 +15,11 @@ export default {
           700: '#4338ca',
           900: '#1e1b4b',
         }
-      }
+      },
+      fontFamily: {
+        sans: ['"IBM Plex Sans"', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'monospace'],
+      },
     },
   },
   plugins: [],

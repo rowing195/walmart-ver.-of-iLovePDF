@@ -1,10 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FileUploader } from './components/Upload/FileUploader';
 import { VisualCanvas } from './components/Canvas/VisualCanvas';
 import { ActionsToolbar } from './components/Toolbar/ActionsToolbar';
+import { Sidebar } from './components/Sidebar';
 import { PageNode } from './types';
 import { uploadFile, exportPdf, exportImagesZip } from './services/api';
-import { Layers, Sparkles, AlertCircle, CheckCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle } from 'lucide-react';
+
+const WORKSPACE_TTL_SECONDS = 3600;
+
+function formatCountdown(seconds: number): string {
+  const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+  const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+}
 
 export function App() {
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -12,6 +21,22 @@ export function App() {
   const [isUploading, setIsUploading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [secondsLeft, setSecondsLeft] = useState(WORKSPACE_TTL_SECONDS);
+  const sessionStartRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!sessionId) return;
+    if (sessionStartRef.current === null) {
+      sessionStartRef.current = Date.now();
+    }
+    const tick = () => {
+      const elapsed = (Date.now() - (sessionStartRef.current ?? Date.now())) / 1000;
+      setSecondsLeft(Math.max(0, Math.round(WORKSPACE_TTL_SECONDS - elapsed)));
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [sessionId]);
 
   const showNotification = (type: 'success' | 'error', message: string) => {
     setNotification({ type, message });
@@ -28,7 +53,7 @@ export function App() {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const doc = await uploadFile(file, currentSessionId);
-        
+
         if (!currentSessionId) {
           currentSessionId = doc.session_id;
           setSessionId(doc.session_id);
@@ -179,70 +204,61 @@ export function App() {
   const selectedCount = pageNodes.filter((n) => n.selected).length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
-      {/* Top Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 shadow-lg shadow-indigo-500/30">
-              <Layers className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-extrabold tracking-tight text-white font-heading">
-                Walmart Version of iLovePDF
-              </h1>
-              <p className="text-[10px] font-medium text-indigo-400 uppercase tracking-widest">
-                Visual PDF & Image Workbench
-              </p>
-            </div>
-          </div>
+    <div className="flex h-screen overflow-x-hidden bg-[#17191d] text-[#c7cbd1]">
+      <Sidebar />
 
-          <div className="flex items-center space-x-2 text-xs text-slate-400">
-            <Sparkles className="h-4 w-4 text-amber-400" />
-            <span>Powered by PyMuPDF</span>
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Header */}
+        <header className="flex h-[52px] shrink-0 items-center justify-between border-b border-[#26292f] px-5">
+          <div className="flex items-baseline gap-2.5">
+            <span className="text-[13px] font-semibold text-[#e5e7eb]">Walmart Version of iLovePDF</span>
+            {sessionId && (
+              <span className="font-mono text-[11px] text-[#6b7280]">/ workspace / {sessionId.slice(0, 8)}</span>
+            )}
           </div>
-        </div>
-      </header>
+          {sessionId ? (
+            <div className="font-mono text-[11px] text-[#6b7280]">
+              TTL <b className="text-[#3b9eff]">{formatCountdown(secondsLeft)}</b> remaining
+            </div>
+          ) : (
+            <div className="text-[11px] text-[#6b7280]">Powered by PyMuPDF</div>
+          )}
+        </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col">
-        {/* Toast Notification Banner */}
+        {/* Toast Notification Banner: fixed overlay so it never shifts layout when it appears/disappears */}
         {notification && (
           <div
-            className={`mb-6 flex items-center space-x-2 rounded-xl p-4 text-sm font-medium shadow-lg transition-all ${
+            className={`fixed inset-x-0 bottom-6 z-50 mx-auto flex w-fit max-w-[calc(100vw-48px)] items-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium shadow-lg ${
               notification.type === 'success'
-                ? 'bg-emerald-950/80 border border-emerald-800 text-emerald-200'
-                : 'bg-rose-950/80 border border-rose-800 text-rose-200'
+                ? 'border-[#1f9d6c]/40 bg-[#0f2019] text-[#5fd6a4]'
+                : 'border-[#f27272]/40 bg-[#241a1a] text-[#f5a3a3]'
             }`}
           >
             {notification.type === 'success' ? (
-              <CheckCircle className="h-5 w-5 text-emerald-400 shrink-0" />
+              <CheckCircle className="h-5 w-5 shrink-0 text-[#1f9d6c]" />
             ) : (
-              <AlertCircle className="h-5 w-5 text-rose-400 shrink-0" />
+              <AlertCircle className="h-5 w-5 shrink-0 text-[#f27272]" />
             )}
             <span>{notification.message}</span>
           </div>
         )}
 
-        {/* View State A: No Documents Uploaded */}
+        {/* Main Content Area */}
         {pageNodes.length === 0 ? (
-          <div className="my-auto py-12 flex flex-col items-center justify-center">
-            <div className="max-w-2xl w-full">
-              <div className="text-center mb-8">
-                <h2 className="text-4xl font-bold tracking-tight text-white font-heading">
-                  Visual Page Manipulation & Conversion
-                </h2>
-                <p className="mt-3 text-slate-400 text-base">
-                  Reorder, rotate, split, merge, insert images, and extract pages with real-time PyMuPDF visual preview grid.
-                </p>
-              </div>
-
-              <FileUploader onFilesSelected={handleFilesSelected} isUploading={isUploading} />
+          <div className="flex min-h-0 flex-1 flex-col p-6">
+            <div className="mb-5 shrink-0 text-center">
+              <h2 className="text-3xl font-bold tracking-tight text-[#e5e7eb]">
+                Visual Page Manipulation &amp; Conversion
+              </h2>
+              <p className="mt-3 text-sm text-[#8b929c]">
+                Reorder, rotate, split, merge, insert images, and extract pages with real-time PyMuPDF visual preview grid.
+              </p>
             </div>
+
+            <FileUploader onFilesSelected={handleFilesSelected} isUploading={isUploading} />
           </div>
         ) : (
-          /* View State B: Active Visual Canvas Workspace */
-          <div className="flex-1 flex flex-col">
+          <div className="flex min-h-0 flex-1 flex-col">
             <ActionsToolbar
               pageNodes={pageNodes}
               selectedCount={selectedCount}
@@ -257,23 +273,20 @@ export function App() {
             />
 
             {sessionId && (
-              <VisualCanvas
-                pageNodes={pageNodes}
-                sessionId={sessionId}
-                onPageNodesChange={setPageNodes}
-                onToggleSelect={handleToggleSelect}
-                onRotate={handleRotate}
-                onDelete={handleDelete}
-              />
+              <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
+                <VisualCanvas
+                  pageNodes={pageNodes}
+                  sessionId={sessionId}
+                  onPageNodesChange={setPageNodes}
+                  onToggleSelect={handleToggleSelect}
+                  onRotate={handleRotate}
+                  onDelete={handleDelete}
+                />
+              </div>
             )}
           </div>
         )}
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-slate-800/60 py-4 text-center text-xs text-slate-400">
-        Walmart Version of iLovePDF &copy; 2026. Ephemeral Local Workspace.
-      </footer>
+      </div>
     </div>
   );
 }
