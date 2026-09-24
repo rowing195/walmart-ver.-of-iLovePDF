@@ -1,11 +1,13 @@
 <div align="center" id="top">
 
+**繁體中文** | [English](README.en.md)
+
 <!-- HEADER STYLE: CLASSIC -->
 <div align="center">
 
 # walmart version of iLovePDF
 
-<em>Visually rearrange, merge, and split PDFs — locally, privately.</em>
+<em>用拖的整理、合併、拆分 PDF，檔案不離開你的電腦。</em>
 
 <!-- BADGES -->
 <img src="https://img.shields.io/github/license/rowing195/walmart-ver.-of-iLovePDF?style=flat&logo=opensourceinitiative&logoColor=white&color=0080ff" alt="license">
@@ -14,7 +16,7 @@
 <img src="https://img.shields.io/github/languages/count/rowing195/walmart-ver.-of-iLovePDF?style=flat&color=0080ff" alt="repo-language-count">
 <img src="https://img.shields.io/github/v/release/rowing195/walmart-ver.-of-iLovePDF?style=flat&logo=github&logoColor=white&color=0080ff" alt="release">
 
-<em>Built with the tools and technologies:</em>
+<em>使用的工具與技術：</em>
 
 <img src="https://img.shields.io/badge/FastAPI-009688.svg?style=flat&logo=FastAPI&logoColor=white" alt="FastAPI">
 <img src="https://img.shields.io/badge/Python-3776AB.svg?style=flat&logo=Python&logoColor=white" alt="Python">
@@ -32,80 +34,80 @@
 
 ---
 
-## Table of Contents
+## 目錄
 
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Features](#features)
-- [Project Structure](#project-structure)
-    - [Project Index](#project-index)
-- [Getting Started](#getting-started)
-    - [Option A: Windows App (.exe)](#option-a-windows-app-exe)
-    - [Option B: Run from Source](#option-b-run-from-source)
-    - [Manual Setup](#manual-setup)
-    - [Testing](#testing)
-- [Building the Windows Executable](#building-the-windows-executable)
-- [Architecture Decisions (ADR)](#architecture-decisions-adr)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-
----
-
-## Overview
-
-**walmart version of iLovePDF** is an iLovePDF-like visual workbench for PDFs and images. Every page of every uploaded file is rendered as a thumbnail card on one canvas, where you select, drag to reorder, rotate, delete, and export — no page numbers to type unless you want to.
-
-**Why walmart version of iLovePDF?**
-
-This project turns page-level PDF editing into direct manipulation, and keeps every file on your own machine. The core features include:
-
-- 🟦 **Visual canvas:** Thumbnails rendered server-side by PyMuPDF, reordered with drag-and-drop across multiple files.
-- 🟦 **Dense workbench UI:** Icon sidebar, compact toolbar, up to 8 columns of pages, and hover tooltips on nearly every control.
-- 🟦 **Two ways to select:** Click cards, or type a range like `1-5, 8, 12-20`.
-- 🟩 **PDF or images out:** Export a merged PDF, or a ZIP of 150-DPI PNGs.
-- 🟩 **Private by default:** No accounts, no database; workspaces are purged after an hour.
-- 🟩 **One-file Windows app:** A single `WalmartPDF.exe` — no Python or Node.js on the target machine.
+- [概覽](#概覽)
+- [架構](#架構)
+- [功能特色](#功能特色)
+- [專案結構](#專案結構)
+    - [專案索引](#專案索引)
+- [快速開始](#快速開始)
+    - [方式 A 直接執行 Windows 程式](#方式-a-直接執行-windows-程式)
+    - [方式 B 從原始碼執行](#方式-b-從原始碼執行)
+    - [手動安裝](#手動安裝)
+    - [測試](#測試)
+- [建置 Windows 執行檔](#建置-windows-執行檔)
+- [架構決策紀錄 ADR](#架構決策紀錄-adr)
+- [參與貢獻](#參與貢獻)
+- [授權](#授權)
+- [致謝](#致謝)
 
 ---
 
-## Architecture
+## 概覽
+
+**walmart version of iLovePDF** 是一個類似 iLovePDF 的 PDF 與圖片視覺化編輯工具。上傳的每個檔案、每一頁都會以縮圖卡片的形式排在同一個畫布上，你可以直接點選、拖曳排序、旋轉、刪除，再匯出成果——想打頁碼也可以，但不是必要。
+
+**為什麼選擇 walmart version of iLovePDF？**
+
+這個專案把逐頁編輯 PDF 變成「直接動手操作」，而且所有檔案都留在你自己的電腦上。主要功能包括：
+
+- 🟦 **視覺化畫布：** 由 PyMuPDF 在伺服器端渲染縮圖，可跨多個檔案拖曳重新排序。
+- 🟦 **密集的工作台介面：** 圖示側邊欄、精簡工具列、最多 8 欄的頁面網格，幾乎每個按鈕都有懸浮提示。
+- 🟦 **兩種選取方式：** 點選卡片，或直接輸入範圍，例如 `1-5, 8, 12-20`。
+- 🟩 **輸出 PDF 或圖片：** 匯出合併後的 PDF，或打包成 150 DPI 的 PNG ZIP 檔。
+- 🟩 **預設就保護隱私：** 不用帳號、沒有資料庫，工作區閒置一小時後自動清除。
+- 🟩 **單一檔案的 Windows 程式：** 只有一個 `WalmartPDF.exe`，使用者的電腦不需要安裝 Python 或 Node.js。
+
+---
+
+## 架構
 
 ```mermaid
 graph TD
-    Client["🌐 React + Vite Frontend (Port 5173)<br/>• Icon Sidebar & Compact Toolbar<br/>• Sortable Page Grid (@dnd-kit)<br/>• Page Range Selection & Hover Tooltips"]
+    Client["🌐 React + Vite 前端（Port 5173）<br/>• 圖示側邊欄與精簡工具列<br/>• 可排序頁面網格（@dnd-kit）<br/>• 頁碼範圍選取與懸浮提示"]
 
-    API["⚡ FastAPI Backend (Port 8000)<br/>• Document Upload Router<br/>• Thumbnail Rendering API<br/>• Export Engine (PDF / ZIP)"]
+    API["⚡ FastAPI 後端（Port 8000）<br/>• 文件上傳路由<br/>• 縮圖渲染 API<br/>• 匯出引擎（PDF / ZIP）"]
 
-    Engine["🐍 PyMuPDF (fitz) Engine<br/>• Fast C-backed PDF Parsing<br/>• Image to PDF Page Conversion<br/>• High-DPI Rendering & Page Manipulation"]
+    Engine["🐍 PyMuPDF（fitz）引擎<br/>• C 語言核心的快速 PDF 解析<br/>• 圖片轉 PDF 頁面<br/>• 高 DPI 渲染與頁面操作"]
 
-    Storage["📁 Ephemeral Session Storage<br/>• data/workspaces/{session_id}/<br/>• Automatic 1-Hour TTL Cleanup Worker"]
+    Storage["📁 暫存工作區<br/>• data/workspaces/{session_id}/<br/>• 一小時後自動清除的背景工作"]
 
-    Client <-->|REST API / Async Fetch| API
-    API <-->|Document Operations| Engine
-    API <-->|File Storage & Cache| Storage
+    Client <-->|REST API / 非同步 Fetch| API
+    API <-->|文件操作| Engine
+    API <-->|檔案儲存與快取| Storage
 ```
 
-In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend from the same origin, so the whole app runs as one process on one port.
+打包成 `WalmartPDF.exe` 時，FastAPI 會從同一個網址直接提供已建置好的前端，整個程式只需要一個行程、一個 port。
 
 ---
 
-## Features
+## 功能特色
 
-|      | Component         | Details |
+|      | 項目              | 細節 |
 | :--- | :---------------- | :------ |
-| ⚙️  | **Architecture**  | <ul><li>Decoupled React SPA + FastAPI REST backend</li><li>Frontend holds the page order as a flat `PageNode[]`; backend compiles it on export</li><li>Single-process packaged mode: FastAPI mounts `frontend/dist` via `StaticFiles`</li><li>Background `lifespan` task purges idle workspaces</li></ul> |
-| 🔩 | **Code Quality**  | <ul><li>TypeScript throughout the frontend</li><li>Pydantic models validate export requests</li><li>Stateless, props-driven card and toolbar components</li></ul> |
-| 📄 | **Documentation** | <ul><li>Four ADRs under `docs/adr`</li><li>Domain glossary in `CONTEXT.md`</li></ul> |
-| 🔌 | **Integrations**  | <ul><li>`PyMuPDF` for parsing, rendering, and PDF assembly</li><li>`Pillow` for image validation, thumbnails, and rotation</li><li>`@dnd-kit` for sortable drag-and-drop</li><li>`PyInstaller` for the single-file Windows build</li></ul> |
-| 🧩 | **Modularity**    | <ul><li>Backend split into `api/`, `core/`, `services/`</li><li>Frontend split into `Upload/`, `Canvas/`, `Toolbar/`, plus shared `Sidebar` and `Tooltip`</li></ul> |
-| ⚡️  | **Performance**   | <ul><li>C-backed MuPDF rendering</li><li>~300 px thumbnails, cached to disk after the first render</li><li>Exports saved with `garbage=4`, `deflate=True`</li></ul> |
-| 🛡️ | **Security**      | <ul><li>`session_id` and file names must match server-generated UUID patterns</li><li>Resolved upload paths are checked against the workspace directory</li><li>Content sniffing (`%PDF-` header, `Image.verify()`) rejects renamed files</li><li>50 MB upload cap</li><li>Packaged app binds to `127.0.0.1` only</li></ul> |
-| 📦 | **Dependencies**  | <ul><li>Backend: `fastapi`, `uvicorn[standard]`, `pymupdf`, `python-multipart`, `pydantic`, `pillow`</li><li>Frontend: `react`, `@dnd-kit/*`, `lucide-react`, `tailwindcss`, `vite`</li></ul> |
+| ⚙️  | **架構**          | <ul><li>React SPA 與 FastAPI REST 後端分離</li><li>前端以扁平的 `PageNode[]` 保存頁面順序，匯出時由後端組合</li><li>打包模式為單一行程：FastAPI 透過 `StaticFiles` 掛載 `frontend/dist`</li><li>由 `lifespan` 背景工作清除閒置的工作區</li></ul> |
+| 🔩 | **程式碼品質**    | <ul><li>前端全面使用 TypeScript</li><li>以 Pydantic 模型驗證匯出請求</li><li>卡片與工具列為無狀態、由 props 驅動的元件</li></ul> |
+| 📄 | **文件**          | <ul><li>`docs/adr` 下有四份架構決策紀錄</li><li>`CONTEXT.md` 定義領域用語</li></ul> |
+| 🔌 | **整合**          | <ul><li>`PyMuPDF` 負責解析、渲染與組合 PDF</li><li>`Pillow` 負責圖片驗證、縮圖與旋轉</li><li>`@dnd-kit` 負責拖曳排序</li><li>`PyInstaller` 負責打包成單一 Windows 執行檔</li></ul> |
+| 🧩 | **模組化**        | <ul><li>後端分成 `api/`、`core/`、`services/`</li><li>前端分成 `Upload/`、`Canvas/`、`Toolbar/`，加上共用的 `Sidebar` 與 `Tooltip`</li></ul> |
+| ⚡️  | **效能**          | <ul><li>C 語言核心的 MuPDF 渲染</li><li>約 300 px 的縮圖，第一次渲染後快取到磁碟</li><li>匯出時使用 `garbage=4`、`deflate=True` 壓縮</li></ul> |
+| 🛡️ | **安全性**        | <ul><li>`session_id` 與檔名必須符合伺服器產生的 UUID 格式</li><li>檢查解析後的上傳路徑必須位於工作區內</li><li>檢查檔案實際內容（`%PDF-` 檔頭、`Image.verify()`），擋下改副檔名的檔案</li><li>上傳上限 50 MB</li><li>打包版只綁定 `127.0.0.1`</li></ul> |
+| 📦 | **相依套件**      | <ul><li>後端：`fastapi`、`uvicorn[standard]`、`pymupdf`、`python-multipart`、`pydantic`、`pillow`</li><li>前端：`react`、`@dnd-kit/*`、`lucide-react`、`tailwindcss`、`vite`</li></ul> |
 
 ---
 
-## Project Structure
+## 專案結構
 
 ```sh
 └── walmart-ver.-of-iLovePDF/
@@ -113,6 +115,7 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
     ├── CONTEXT.md
     ├── LICENSE
     ├── README.md
+    ├── README.en.md
     ├── WalmartPDF.spec
     ├── backend/
     │   ├── app/
@@ -135,7 +138,7 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
     └── start.sh
 ```
 
-### Project Index
+### 專案索引
 
 <details open>
 	<summary><b><code>WALMART-VER.-OF-ILOVEPDF/</code></b></summary>
@@ -148,33 +151,33 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 			<table style='width: 100%; border-collapse: collapse;'>
 			<thead>
 				<tr style='background-color: #f8f9fa;'>
-					<th style='width: 30%; text-align: left; padding: 8px;'>File Name</th>
-					<th style='text-align: left; padding: 8px;'>Summary</th>
+					<th style='width: 30%; text-align: left; padding: 8px;'>檔案</th>
+					<th style='text-align: left; padding: 8px;'>說明</th>
 				</tr>
 			</thead>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/build.ps1'>build.ps1</a></b></td>
-					<td style='padding: 8px;'>Produces the distributable single-file Windows executable. Checks for Node.js, npm, and Python, builds the frontend with a clean install, prepares an isolated build virtualenv so developer packages cannot leak into the bundle, installs PyInstaller, and runs the spec. Fails fast with a clear message at each stage and reports the final executable size.</td>
+					<td style='padding: 8px;'>產生可發佈的單一 Windows 執行檔。先確認 Node.js、npm、Python 都存在，以乾淨安裝的方式建置前端，再建立獨立的建置用虛擬環境，避免開發時裝的套件混進打包結果，接著安裝 PyInstaller 並執行 spec。每個階段失敗都會立刻停下並給出清楚訊息，最後回報執行檔大小。</td>
 				</tr>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/WalmartPDF.spec'>WalmartPDF.spec</a></b></td>
-					<td style='padding: 8px;'>Defines how the backend and the built frontend are frozen into one console executable. Bundles the production SPA as data, declares uvicorn submodules that static analysis cannot discover, excludes tkinter to shrink the output, and deliberately disables UPX compression to avoid antivirus false positives and corrupted native libraries.</td>
+					<td style='padding: 8px;'>定義後端與建置好的前端如何被打包成單一的主控台執行檔。把正式版 SPA 當成資料一起打包、宣告靜態分析找不到的 uvicorn 子模組、排除 tkinter 以縮小檔案，並刻意關閉 UPX 壓縮，避免防毒軟體誤判以及原生函式庫損毀。</td>
 				</tr>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/start.bat'>start.bat</a></b></td>
-					<td style='padding: 8px;'>Launches the full development stack on Windows with a double-click. Creates the Python virtualenv when missing, installs backend requirements and frontend packages, then starts the FastAPI server and the Vite dev server side by side, handling project paths that contain spaces and stopping with a readable error if any setup step fails.</td>
+					<td style='padding: 8px;'>在 Windows 上雙擊就能啟動完整的開發環境。缺少 Python 虛擬環境時會自動建立，安裝後端與前端套件後，同時啟動 FastAPI 伺服器與 Vite 開發伺服器；專案路徑含有空格也能正常運作，任何安裝步驟失敗都會顯示易讀的錯誤訊息。</td>
 				</tr>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/start.ps1'>start.ps1</a></b></td>
-					<td style='padding: 8px;'>Provides the PowerShell flavour of the development launcher. Prepares the virtualenv and dependencies, opens separate windows for the uvicorn backend with reload and the Vite frontend, waits briefly for both to come up, and then opens the application in the default browser so a developer lands directly on a working canvas.</td>
+					<td style='padding: 8px;'>PowerShell 版的開發啟動腳本。準備好虛擬環境與相依套件後，分別開啟兩個視窗執行具自動重載的 uvicorn 後端與 Vite 前端，稍等兩者啟動，再用預設瀏覽器打開應用程式，讓開發者直接看到可用的畫布。</td>
 				</tr>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/start.sh'>start.sh</a></b></td>
-					<td style='padding: 8px;'>Starts the development environment on Linux and macOS. Creates and activates the virtualenv, installs backend and frontend dependencies, runs uvicorn and the Vite dev server as background jobs, and registers an exit trap so stopping the script also shuts down both servers instead of leaving orphaned processes behind.</td>
+					<td style='padding: 8px;'>在 Linux 與 macOS 上啟動開發環境。建立並啟用虛擬環境、安裝前後端相依套件，以背景工作執行 uvicorn 與 Vite 開發伺服器，並註冊結束時的清理動作，關掉腳本時會一併停止兩個伺服器，不會留下孤兒行程。</td>
 				</tr>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/CONTEXT.md'>CONTEXT.md</a></b></td>
-					<td style='padding: 8px;'>Establishes the shared domain vocabulary used across code and documentation. Defines Documents as uploaded PDFs or images, Page Nodes as the atomic unit of editing, the Visual Canvas where nodes are arranged, and Export Jobs that turn canvas state into a merged PDF or a ZIP archive of page images.</td>
+					<td style='padding: 8px;'>建立程式碼與文件共用的領域用語。定義 Document 為上傳的 PDF 或圖片、Page Node 為編輯的最小單位、Visual Canvas 為排列頁面的畫布，以及 Export Job 如何把畫布狀態轉成合併後的 PDF 或頁面圖片的 ZIP 檔。</td>
 				</tr>
 			</table>
 		</blockquote>
@@ -188,17 +191,17 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 			<table style='width: 100%; border-collapse: collapse;'>
 			<thead>
 				<tr style='background-color: #f8f9fa;'>
-					<th style='width: 30%; text-align: left; padding: 8px;'>File Name</th>
-					<th style='text-align: left; padding: 8px;'>Summary</th>
+					<th style='width: 30%; text-align: left; padding: 8px;'>檔案</th>
+					<th style='text-align: left; padding: 8px;'>說明</th>
 				</tr>
 			</thead>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/backend/desktop.py'>desktop.py</a></b></td>
-					<td style='padding: 8px;'>Serves as the entry point frozen into the Windows executable. Picks port 8000 or falls back to any free port, prints the running address to the console, and opens the browser only once the server actually accepts connections. Runs uvicorn on the main thread against the imported app object so the bundle behaves predictably and quits cleanly.</td>
+					<td style='padding: 8px;'>打包進 Windows 執行檔的程式進入點。優先使用 port 8000，被占用時改用任一可用的 port，在主控台印出執行網址，並等到伺服器真的能接受連線才打開瀏覽器。uvicorn 在主執行緒上直接執行匯入的 app 物件，讓打包後的行為可預期、也能乾淨地結束。</td>
 				</tr>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/backend/requirements.txt'>requirements.txt</a></b></td>
-					<td style='padding: 8px;'>Pins the exact backend dependency versions shared by development and the packaged build. Covers the FastAPI web framework, the uvicorn ASGI server with standard extras, PyMuPDF for document work, python-multipart for file uploads, Pydantic for request validation, and Pillow for image verification, thumbnails, and rotation.</td>
+					<td style='padding: 8px;'>鎖定開發與打包共用的後端套件版本。包含 FastAPI 網頁框架、附標準擴充的 uvicorn ASGI 伺服器、處理文件的 PyMuPDF、處理檔案上傳的 python-multipart、驗證請求的 Pydantic，以及負責圖片驗證、縮圖與旋轉的 Pillow。</td>
 				</tr>
 			</table>
 			<!-- app Submodule -->
@@ -210,13 +213,13 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 					<table style='width: 100%; border-collapse: collapse;'>
 					<thead>
 						<tr style='background-color: #f8f9fa;'>
-							<th style='width: 30%; text-align: left; padding: 8px;'>File Name</th>
-							<th style='text-align: left; padding: 8px;'>Summary</th>
+							<th style='width: 30%; text-align: left; padding: 8px;'>檔案</th>
+							<th style='text-align: left; padding: 8px;'>說明</th>
 						</tr>
 					</thead>
 						<tr style='border-bottom: 1px solid #eee;'>
 							<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/backend/app/main.py'>main.py</a></b></td>
-							<td style='padding: 8px;'>Assembles the FastAPI application. Registers CORS for local development, mounts all API routes under the api prefix, exposes a health endpoint, and runs the workspace cleanup loop through a lifespan handler that cancels it on shutdown. When a built frontend exists, also serves the single-page app from the same origin for packaged mode.</td>
+							<td style='padding: 8px;'>組裝 FastAPI 應用程式。設定本機開發用的 CORS、把所有 API 路由掛在 api 前綴下、提供健康檢查端點，並透過 lifespan 執行工作區清理迴圈，關閉時會一併取消。如果有建置好的前端，也會從同一個網址提供單頁應用程式，供打包模式使用。</td>
 						</tr>
 					</table>
 					<!-- api Submodule -->
@@ -228,21 +231,21 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 							<table style='width: 100%; border-collapse: collapse;'>
 							<thead>
 								<tr style='background-color: #f8f9fa;'>
-									<th style='width: 30%; text-align: left; padding: 8px;'>File Name</th>
-									<th style='text-align: left; padding: 8px;'>Summary</th>
+									<th style='width: 30%; text-align: left; padding: 8px;'>檔案</th>
+									<th style='text-align: left; padding: 8px;'>說明</th>
 								</tr>
 							</thead>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/backend/app/api/router.py'>router.py</a></b></td>
-									<td style='padding: 8px;'>Combines the feature routers into one API router consumed by the application. Mounts document handling under a documents prefix and export handling under an export prefix, tagging each group so the automatically generated OpenAPI documentation stays organised by responsibility rather than presenting one flat list of endpoints.</td>
+									<td style='padding: 8px;'>把各功能的路由合併成應用程式使用的單一 API 路由。文件處理掛在 documents 前綴、匯出掛在 export 前綴，並各自加上標籤，讓自動產生的 OpenAPI 文件依職責分組，而不是一整串平鋪的端點。</td>
 								</tr>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/backend/app/api/endpoints/documents.py'>endpoints/documents.py</a></b></td>
-									<td style='padding: 8px;'>Handles document intake and page previews. Accepts PDF and image uploads, enforces the allowed extensions and size cap, sniffs actual file content to reject disguised files, stores them in the session workspace, and returns page metadata. Also serves per-page thumbnails rendered on demand through the PDF service and cached for later requests.</td>
+									<td style='padding: 8px;'>處理文件上傳與頁面預覽。接收 PDF 與圖片、檢查允許的副檔名與大小上限、檢查實際檔案內容以擋下偽裝的檔案，存進該工作階段的工作區並回傳頁面資訊。也提供每一頁的縮圖，第一次請求時透過 PDF 服務渲染，之後直接讀取快取。</td>
 								</tr>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/backend/app/api/endpoints/export.py'>endpoints/export.py</a></b></td>
-									<td style='padding: 8px;'>Turns the canvas state sent by the frontend into downloadable files. Validates an ordered list of page nodes with their rotations, rejects file references that are not server-generated names, then delegates to the PDF service to produce either a single merged PDF or a ZIP archive of rendered page images.</td>
+									<td style='padding: 8px;'>把前端送來的畫布狀態轉成可下載的檔案。驗證依序排列、含旋轉角度的頁面清單，拒絕不是伺服器產生的檔名，再交給 PDF 服務產生合併後的單一 PDF，或是打包成頁面圖片的 ZIP 檔。</td>
 								</tr>
 							</table>
 						</blockquote>
@@ -256,17 +259,17 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 							<table style='width: 100%; border-collapse: collapse;'>
 							<thead>
 								<tr style='background-color: #f8f9fa;'>
-									<th style='width: 30%; text-align: left; padding: 8px;'>File Name</th>
-									<th style='text-align: left; padding: 8px;'>Summary</th>
+									<th style='width: 30%; text-align: left; padding: 8px;'>檔案</th>
+									<th style='text-align: left; padding: 8px;'>說明</th>
 								</tr>
 							</thead>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/backend/app/core/config.py'>config.py</a></b></td>
-									<td style='padding: 8px;'>Centralises runtime settings and path resolution. Detects whether the app is running frozen inside the executable and, if so, reads bundled assets from the extraction directory while keeping user data in the local application data folder. Defines the one-hour workspace lifetime, the upload size limit, and the UUID patterns used to validate identifiers.</td>
+									<td style='padding: 8px;'>集中管理執行設定與路徑。偵測程式是否在打包後的執行檔內執行，若是，就從解壓縮目錄讀取打包的資源，並把使用者資料放在本機應用程式資料夾。同時定義工作區一小時的存活時間、上傳大小上限，以及用來驗證識別碼的 UUID 格式。</td>
 								</tr>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/backend/app/core/cleanup.py'>cleanup.py</a></b></td>
-									<td style='padding: 8px;'>Implements the background garbage collector behind the privacy promise. Wakes every ten minutes, inspects each session workspace, and deletes any whose last modification is older than the configured lifetime, logging failures without crashing the loop so a single locked file never stops cleanup of the remaining workspaces.</td>
+									<td style='padding: 8px;'>實作支撐隱私承諾的背景清理機制。每十分鐘檢查一次所有工作區，刪除最後修改時間超過存活時間的工作區；刪除失敗只會記錄下來、不會讓迴圈中斷，單一被鎖住的檔案不會影響其他工作區的清理。</td>
 								</tr>
 							</table>
 						</blockquote>
@@ -280,17 +283,17 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 							<table style='width: 100%; border-collapse: collapse;'>
 							<thead>
 								<tr style='background-color: #f8f9fa;'>
-									<th style='width: 30%; text-align: left; padding: 8px;'>File Name</th>
-									<th style='text-align: left; padding: 8px;'>Summary</th>
+									<th style='width: 30%; text-align: left; padding: 8px;'>檔案</th>
+									<th style='text-align: left; padding: 8px;'>說明</th>
 								</tr>
 							</thead>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/backend/app/services/pdf_service.py'>pdf_service.py</a></b></td>
-									<td style='padding: 8px;'>Performs all document processing with PyMuPDF and Pillow. Reads page counts and dimensions, renders and caches small page thumbnails, converts images into PDF pages, assembles an ordered and rotated set of pages into one compressed PDF, and renders selected pages into PNG images packed into a ZIP archive for download.</td>
+									<td style='padding: 8px;'>用 PyMuPDF 與 Pillow 處理所有文件工作。讀取頁數與尺寸、渲染並快取小縮圖、把圖片轉成 PDF 頁面、把依序排列且旋轉過的頁面組合成一份壓縮過的 PDF，也能把選取的頁面渲染成 PNG 並打包成 ZIP 供下載。</td>
 								</tr>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/backend/app/services/workspace_service.py'>workspace_service.py</a></b></td>
-									<td style='padding: 8px;'>Manages per-session storage on disk. Creates UUID-named workspaces with upload, thumbnail, and export folders, saves uploads under server-generated names, and resolves requested file names back to real paths only when they stay inside the workspace upload folder, blocking path traversal through user-supplied identifiers.</td>
+									<td style='padding: 8px;'>管理每個工作階段在磁碟上的儲存空間。建立以 UUID 命名、含上傳、縮圖、匯出資料夾的工作區，以伺服器產生的檔名儲存上傳檔案，而且只有在路徑確實位於上傳資料夾內時才會解析成實際路徑，防止透過使用者提供的識別碼進行路徑穿越。</td>
 								</tr>
 							</table>
 						</blockquote>
@@ -308,25 +311,25 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 			<table style='width: 100%; border-collapse: collapse;'>
 			<thead>
 				<tr style='background-color: #f8f9fa;'>
-					<th style='width: 30%; text-align: left; padding: 8px;'>File Name</th>
-					<th style='text-align: left; padding: 8px;'>Summary</th>
+					<th style='width: 30%; text-align: left; padding: 8px;'>檔案</th>
+					<th style='text-align: left; padding: 8px;'>說明</th>
 				</tr>
 			</thead>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/package.json'>package.json</a></b></td>
-					<td style='padding: 8px;'>Declares the frontend package, its scripts, and dependencies. Provides dev, type-checked production build, and preview commands for Vite, and lists React, the dnd-kit drag-and-drop packages, and Lucide icons at runtime, alongside TypeScript, Tailwind CSS, PostCSS, and the Vite React plugin as build-time tooling.</td>
+					<td style='padding: 8px;'>宣告前端套件、指令與相依套件。提供 Vite 的開發、含型別檢查的正式建置，以及預覽指令；執行期依賴 React、dnd-kit 拖曳套件與 Lucide 圖示，建置期工具則有 TypeScript、Tailwind CSS、PostCSS 與 Vite 的 React 外掛。</td>
 				</tr>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/vite.config.ts'>vite.config.ts</a></b></td>
-					<td style='padding: 8px;'>Configures the Vite development server for the React application. Fixes the dev port at 5173 and proxies every api request to the FastAPI backend on port 8000, so the frontend can use relative URLs that work identically in development and in the packaged single-origin executable without any environment-specific code.</td>
+					<td style='padding: 8px;'>設定 React 應用程式的 Vite 開發伺服器。開發 port 固定為 5173，並把所有 api 請求代理到 port 8000 的 FastAPI 後端，讓前端用相對網址就能在開發環境與單一網址的打包版中一樣運作，不需要任何依環境切換的程式碼。</td>
 				</tr>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/tailwind.config.js'>tailwind.config.js</a></b></td>
-					<td style='padding: 8px;'>Sets up Tailwind CSS scanning and theme extensions for the interface. Points content detection at the HTML shell and all TypeScript sources, and maps the sans and mono font families to IBM Plex Sans and IBM Plex Mono, giving the dense workbench its consistent typography across labels, badges, and file names.</td>
+					<td style='padding: 8px;'>設定 Tailwind CSS 的掃描範圍與主題擴充。內容偵測涵蓋 HTML 外殼與所有 TypeScript 原始碼，並把 sans 與 mono 字體對應到 IBM Plex Sans 與 IBM Plex Mono，讓工作台的標籤、徽章與檔名有一致的字體。</td>
 				</tr>
 				<tr style='border-bottom: 1px solid #eee;'>
 					<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/index.html'>index.html</a></b></td>
-					<td style='padding: 8px;'>Provides the HTML shell that Vite injects the React application into. Loads the IBM Plex font families from Google Fonts, applies the dark neutral page background, text color, and selection highlight at the body level, and hosts the root element where the entire workbench interface is mounted at runtime.</td>
+					<td style='padding: 8px;'>Vite 用來注入 React 應用程式的 HTML 外殼。從 Google Fonts 載入 IBM Plex 字體家族，在 body 層級設定深色背景、文字顏色與選取反白，並提供整個工作台介面在執行時掛載的根元素。</td>
 				</tr>
 			</table>
 			<!-- src Submodule -->
@@ -338,21 +341,21 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 					<table style='width: 100%; border-collapse: collapse;'>
 					<thead>
 						<tr style='background-color: #f8f9fa;'>
-							<th style='width: 30%; text-align: left; padding: 8px;'>File Name</th>
-							<th style='text-align: left; padding: 8px;'>Summary</th>
+							<th style='width: 30%; text-align: left; padding: 8px;'>檔案</th>
+							<th style='text-align: left; padding: 8px;'>說明</th>
 						</tr>
 					</thead>
 						<tr style='border-bottom: 1px solid #eee;'>
 							<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/src/App.tsx'>App.tsx</a></b></td>
-							<td style='padding: 8px;'>Owns application state and layout for the whole workbench. Holds the session, the ordered page nodes, selection, rotation, and range-selection handlers, plus upload and export flows that trigger file downloads. Renders the sidebar, header with a live workspace countdown, a floating toast, and either the full-size drop zone or the toolbar and page grid.</td>
+							<td style='padding: 8px;'>掌管整個工作台的狀態與版面。保存工作階段、依序排列的頁面節點，以及選取、旋轉、範圍選取的處理邏輯，還有會觸發下載的上傳與匯出流程。負責渲染側邊欄、含工作區倒數計時的頁首、浮動通知，以及全尺寸的拖放上傳區或工具列加頁面網格。</td>
 						</tr>
 						<tr style='border-bottom: 1px solid #eee;'>
 							<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/src/index.css'>index.css</a></b></td>
-							<td style='padding: 8px;'>Defines global styles on top of Tailwind. Sets the IBM Plex typography, prevents page-level horizontal scrolling, themes scrollbars in the blue accent, and implements the hover tooltip mechanism, which reveals a bubble after a one-second hover, hides it instantly on leave, and supports below, above, and right placements with arrows.</td>
+							<td style='padding: 8px;'>在 Tailwind 之上定義全域樣式。設定 IBM Plex 字體、防止整個頁面水平捲動、把捲軸配成藍色主題色，並實作懸浮提示：滑鼠停留一秒後顯示、移開立刻消失，支援下方、上方與右側三種位置並附箭頭。</td>
 						</tr>
 						<tr style='border-bottom: 1px solid #eee;'>
 							<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/src/main.tsx'>main.tsx</a></b></td>
-							<td style='padding: 8px;'>Bootstraps the React application. Imports the global stylesheet, locates the root element in the HTML shell, and renders the main App component inside React strict mode, which surfaces unsafe lifecycle usage and accidental side effects during development without affecting the production build that ships inside the Windows executable.</td>
+							<td style='padding: 8px;'>啟動 React 應用程式。匯入全域樣式表、找到 HTML 外殼中的根元素，並在 React 嚴格模式下渲染主要的 App 元件；嚴格模式會在開發時揭露不安全的生命週期用法與意外副作用，不影響打包進執行檔的正式版。</td>
 						</tr>
 					</table>
 					<!-- components Submodule -->
@@ -364,33 +367,33 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 							<table style='width: 100%; border-collapse: collapse;'>
 							<thead>
 								<tr style='background-color: #f8f9fa;'>
-									<th style='width: 30%; text-align: left; padding: 8px;'>File Name</th>
-									<th style='text-align: left; padding: 8px;'>Summary</th>
+									<th style='width: 30%; text-align: left; padding: 8px;'>檔案</th>
+									<th style='text-align: left; padding: 8px;'>說明</th>
 								</tr>
 							</thead>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/src/components/Sidebar.tsx'>Sidebar.tsx</a></b></td>
-									<td style='padding: 8px;'>Renders the narrow icon navigation rail on the left edge of the workbench. Shows the product mark, the active page overview entry, and placeholders for layers, version history, and workspace settings marked as coming soon, each labelled with a tooltip and an accessible name so the compact icons remain self-explanatory to new users.</td>
+									<td style='padding: 8px;'>在工作台左側渲染窄版的圖示導覽列。顯示產品標誌、目前所在的頁面總覽，以及標示「即將推出」的圖層、版本記錄與工作區設定；每個圖示都有懸浮提示與無障礙名稱，讓精簡的圖示對新使用者也一看就懂。</td>
 								</tr>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/src/components/Tooltip.tsx'>Tooltip.tsx</a></b></td>
-									<td style='padding: 8px;'>Provides a lightweight reusable hover tooltip wrapper. Surrounds any control and attaches a label bubble placed below, above, or to the right, relying entirely on the shared stylesheet for the delayed reveal, so the toolbar, sidebar, and page cards can explain themselves without occupying any permanent layout space.</td>
+									<td style='padding: 8px;'>提供輕量、可重複使用的懸浮提示包裝元件。包住任何控制項，並附上放在下方、上方或右側的說明泡泡，延遲顯示的效果完全交給共用樣式表處理，讓工具列、側邊欄與頁面卡片不必占用任何固定版面就能自我說明。</td>
 								</tr>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/src/components/Upload/FileUploader.tsx'>Upload/FileUploader.tsx</a></b></td>
-									<td style='padding: 8px;'>Presents the empty-state drop zone that fills most of the workspace. Accepts files by drag-and-drop or through a hidden file picker restricted to PDFs and common image formats, forwards them to the application for upload, and swaps its icon for a spinner while pages are being uploaded and rendered.</td>
+									<td style='padding: 8px;'>顯示佔滿大部分工作區的空白狀態拖放上傳區。可以拖放檔案，或透過只接受 PDF 與常見圖片格式的隱藏檔案選擇器上傳，交給應用程式處理；頁面上傳與渲染期間，圖示會換成讀取中的動畫。</td>
 								</tr>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/src/components/Toolbar/ActionsToolbar.tsx'>Toolbar/ActionsToolbar.tsx</a></b></td>
-									<td style='padding: 8px;'>Hosts every bulk action in one compact toolbar. Inserts more files, toggles select-all, parses page range expressions such as 1-5, 8 into a live selection while flagging invalid input, rotates or deletes the selection, shows the selected count, and triggers merged PDF or PNG ZIP exports, with tooltips on each control.</td>
+									<td style='padding: 8px;'>把所有批次操作集中在一條精簡的工具列。可以插入更多檔案、切換全選、把 1-5, 8 這類頁碼範圍即時轉成選取並標示無效輸入、旋轉或刪除選取的頁面、顯示已選數量，以及匯出合併 PDF 或 PNG ZIP，每個控制項都有懸浮提示。</td>
 								</tr>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/src/components/Canvas/VisualCanvas.tsx'>Canvas/VisualCanvas.tsx</a></b></td>
-									<td style='padding: 8px;'>Lays out all page cards in a responsive grid of up to eight columns and makes them sortable. Configures dnd-kit pointer and keyboard sensors with a small activation distance so clicks are not mistaken for drags, and writes the reordered page list back to the application when a drag completes.</td>
+									<td style='padding: 8px;'>把所有頁面卡片排成最多八欄的響應式網格，並讓它們可以排序。設定 dnd-kit 的指標與鍵盤感應器，加上小段的啟動距離，避免點擊被誤判成拖曳；拖曳結束時把重新排序後的頁面清單寫回應用程式。</td>
 								</tr>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/src/components/Canvas/PageCard.tsx'>Canvas/PageCard.tsx</a></b></td>
-									<td style='padding: 8px;'>Displays a single page as a draggable card. Shows the source file name, a server-rendered thumbnail rotated to the current angle, the page position and rotation badges, and controls for selection, left and right rotation, and deletion, raising its stacking order only while dragged so neighbouring tooltips are never covered.</td>
+									<td style='padding: 8px;'>以可拖曳的卡片顯示單一頁面。包含來源檔名、依目前角度旋轉的伺服器端縮圖、頁碼與旋轉角度標籤，以及選取、左右旋轉與刪除的控制項；只有在拖曳時才提高堆疊順序，避免蓋住相鄰卡片的懸浮提示。</td>
 								</tr>
 							</table>
 						</blockquote>
@@ -404,13 +407,13 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 							<table style='width: 100%; border-collapse: collapse;'>
 							<thead>
 								<tr style='background-color: #f8f9fa;'>
-									<th style='width: 30%; text-align: left; padding: 8px;'>File Name</th>
-									<th style='text-align: left; padding: 8px;'>Summary</th>
+									<th style='width: 30%; text-align: left; padding: 8px;'>檔案</th>
+									<th style='text-align: left; padding: 8px;'>說明</th>
 								</tr>
 							</thead>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/src/services/api.ts'>api.ts</a></b></td>
-									<td style='padding: 8px;'>Wraps every backend call used by the interface. Uploads files as multipart form data while reusing the current session, builds thumbnail URLs for page cards, and posts export recipes to receive merged PDF or ZIP archives as binary blobs, converting failed responses into readable errors surfaced through the toast notification.</td>
+									<td style='padding: 8px;'>包裝介面用到的所有後端呼叫。以 multipart 表單上傳檔案並沿用目前的工作階段、為頁面卡片產生縮圖網址，並送出匯出請求以取得合併 PDF 或 ZIP 的二進位資料；請求失敗時轉成易讀的錯誤訊息，透過浮動通知顯示。</td>
 								</tr>
 							</table>
 						</blockquote>
@@ -424,13 +427,13 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 							<table style='width: 100%; border-collapse: collapse;'>
 							<thead>
 								<tr style='background-color: #f8f9fa;'>
-									<th style='width: 30%; text-align: left; padding: 8px;'>File Name</th>
-									<th style='text-align: left; padding: 8px;'>Summary</th>
+									<th style='width: 30%; text-align: left; padding: 8px;'>檔案</th>
+									<th style='text-align: left; padding: 8px;'>說明</th>
 								</tr>
 							</thead>
 								<tr style='border-bottom: 1px solid #eee;'>
 									<td style='padding: 8px;'><b><a href='https://github.com/rowing195/walmart-ver.-of-iLovePDF/blob/main/frontend/src/types/index.ts'>index.ts</a></b></td>
-									<td style='padding: 8px;'>Defines the shared TypeScript shapes exchanged between components and the backend. Describes uploaded documents with their page dimensions, the page node that represents one card with its source, index, rotation, and selection state, and the export recipe that carries the ordered, rotated page list to the server.</td>
+									<td style='padding: 8px;'>定義元件之間、以及與後端交換資料時共用的 TypeScript 型別。描述含頁面尺寸的上傳文件、代表一張卡片的頁面節點（來源、頁碼、旋轉角度、選取狀態），以及把依序排列、含旋轉資訊的頁面清單送到伺服器的匯出請求。</td>
 								</tr>
 							</table>
 						</blockquote>
@@ -443,79 +446,69 @@ In the packaged `WalmartPDF.exe`, FastAPI also serves the pre-built frontend fro
 
 ---
 
-## Getting Started
+## 快速開始
 
-### Option A: Windows App (.exe)
+### 方式 A 直接執行 Windows 程式
 
-**No Python, no Node.js, no installation.** Download `WalmartPDF.exe` from the
-[latest release](https://github.com/rowing195/walmart-ver.-of-iLovePDF/releases/latest) and double-click it.
+**不用裝 Python、不用裝 Node.js、不用安裝。** 從[最新版本](https://github.com/rowing195/walmart-ver.-of-iLovePDF/releases/latest)下載 `WalmartPDF.exe`，雙擊就能執行。
 
-It starts a local server, opens your browser automatically, and serves the whole
-app from that single file. Everything runs on your own machine — nothing is
-uploaded anywhere.
+它會啟動本機伺服器、自動打開瀏覽器，整個應用程式都由這一個檔案提供。所有處理都在你的電腦上進行，不會上傳到任何地方。
 
 > [!NOTE]
-> **First launch shows a SmartScreen warning.** The executable is not code-signed,
-> so Windows displays *"Windows protected your PC — Unknown publisher."*
-> Click **More info → Run anyway**. This is expected for any unsigned application.
+> **第一次執行會出現 SmartScreen 警告。** 這個執行檔沒有程式碼簽章，Windows 會顯示「Windows 已保護您的電腦」。
+> 點 **其他資訊 → 仍要執行** 即可，任何沒有簽章的程式都會這樣。
 
-A black console window stays open while the app runs — **close it to quit**.
-Your working files are stored in `%LOCALAPPDATA%\WalmartPDF\workspaces` and are
-purged automatically one hour after a session goes idle.
+程式執行時會有一個黑色主控台視窗，**關掉它就會結束程式**。
+工作中的檔案存放在 `%LOCALAPPDATA%\WalmartPDF\workspaces`，工作階段閒置一小時後會自動清除。
 
-If port `8000` is already in use, the app picks a free port automatically and
-opens the browser at that address.
+如果 port `8000` 已被占用，程式會自動改用其他可用的 port，並用那個網址打開瀏覽器。
 
 ---
 
-### Option B: Run from Source
+### 方式 B 從原始碼執行
 
-**Prerequisites**
+**需求**
 
-This project requires the following dependencies:
+- **程式語言：** Python `3.10+`、TypeScript
+- **套件管理：** pip、npm（Node.js `18+`）
 
-- **Programming Languages:** Python `3.10+`, TypeScript
-- **Package Managers:** pip, npm (Node.js `18+`)
+在 Windows 上，直接雙擊專案根目錄的 **`start.bat`**（macOS / Linux 執行 `./start.sh`）。
 
-On Windows, simply double-click **`start.bat`** in the project root directory
-(macOS / Linux: run `./start.sh`).
+腳本會自動：
+1. 若不存在，建立 Python 虛擬環境（`.venv`）。
+2. 安裝 Python 相依套件（`pymupdf`、`fastapi`、`uvicorn` 等）。
+3. 安裝前端 `npm` 套件。
+4. 在 `http://localhost:8000` 啟動 FastAPI 後端，在 `http://localhost:5173` 啟動 Vite 前端。
+5. 自動打開預設瀏覽器。
 
-The script automatically:
-1. Creates Python virtual environment (`.venv`) if missing.
-2. Installs Python dependencies (`pymupdf`, `fastapi`, `uvicorn`, etc.).
-3. Installs frontend `npm` packages.
-4. Launches FastAPI Backend on `http://localhost:8000` and Vite Frontend on `http://localhost:5173`.
-5. Opens your default browser automatically.
-
-This is the development setup: the Vite dev server provides hot reload, and
-proxies `/api` requests to the backend.
+這是開發用的環境：Vite 開發伺服器支援熱重載，並把 `/api` 請求代理到後端。
 
 ---
 
-### Manual Setup
+### 手動安裝
 
-1. **Clone the repository:**
+1. **複製專案：**
 
     ```sh
     ❯ git clone https://github.com/rowing195/walmart-ver.-of-iLovePDF
     ```
 
-2. **Navigate to the project directory:**
+2. **進入專案資料夾：**
 
     ```sh
     ❯ cd walmart-ver.-of-iLovePDF
     ```
 
-3. **Set up and run the backend:**
+3. **安裝並啟動後端：**
 
     ```sh
     ❯ python -m venv .venv
-    ❯ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+    ❯ source .venv/bin/activate  # Windows：.venv\Scripts\activate
     ❯ pip install -r backend/requirements.txt
     ❯ python -m uvicorn app.main:app --reload --port 8000 --app-dir backend
     ```
 
-4. **In a second terminal, set up and run the frontend:**
+4. **另開一個終端機，安裝並啟動前端：**
 
     ```sh
     ❯ cd frontend
@@ -523,14 +516,13 @@ proxies `/api` requests to the backend.
     ❯ npm run dev
     ```
 
-Open `http://localhost:5173` in your browser.
+用瀏覽器打開 `http://localhost:5173`。
 
 ---
 
-### Testing
+### 測試
 
-The project does not include an automated test suite yet. The frontend build
-does run a TypeScript type check:
+專案目前還沒有自動化測試。前端建置時會執行 TypeScript 型別檢查：
 
 ```sh
 ❯ cd frontend
@@ -539,109 +531,102 @@ does run a TypeScript type check:
 
 ---
 
-## Building the Windows Executable
+## 建置 Windows 執行檔
 
-From the project root, in PowerShell:
+在專案根目錄的 PowerShell 執行：
 
 ```powershell
 .\build.ps1
 ```
 
-If PowerShell refuses with *"running scripts is disabled on this system"*, your
-execution policy blocks local scripts. Run it once with a bypass instead:
+如果 PowerShell 顯示「因為這個系統上已停用指令碼執行」，代表你的執行原則擋住了本機指令碼，改用這個方式執行一次即可：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File build.ps1
 ```
 
-The result is **`dist\WalmartPDF.exe`** (~40 MB) — a single self-contained file
-that runs on any Windows machine without Python or Node.js installed.
+產出的是 **`dist\WalmartPDF.exe`**（約 40 MB），一個獨立的單一檔案，在沒有安裝 Python 或 Node.js 的 Windows 電腦上也能執行。
 
-**What the script does:**
+**腳本做了什麼：**
 
-| Step | Action |
+| 步驟 | 動作 |
 | :--- | :--- |
-| 1 | Verifies `node`, `npm`, and `python` are on `PATH` |
-| 2 | `npm ci` + `npm run build` → produces `frontend/dist` |
-| 3 | Creates `.build-venv` and installs backend requirements + PyInstaller |
-| 4 | Runs PyInstaller against `WalmartPDF.spec` |
+| 1 | 確認 `node`、`npm`、`python` 都在 `PATH` 上 |
+| 2 | `npm ci` + `npm run build` → 產生 `frontend/dist` |
+| 3 | 建立 `.build-venv`，安裝後端套件與 PyInstaller |
+| 4 | 用 `WalmartPDF.spec` 執行 PyInstaller |
 
-**Requirements for building** (the end user needs none of these):
+**建置需求**（使用者本身都不需要）：
 
-- **Windows** — PyInstaller cannot cross-compile, so a Windows `.exe` must be built on Windows.
-- Node.js `18+` and Python `3.10+`.
+- **Windows**：PyInstaller 無法跨平台編譯，Windows 的 `.exe` 必須在 Windows 上建置。
+- Node.js `18+` 與 Python `3.10+`。
 
 > [!IMPORTANT]
-> **Close any running `WalmartPDF.exe` before rebuilding.** A running instance
-> locks `dist\WalmartPDF.exe` and PyInstaller fails with
-> `PermissionError: [WinError 5] Access is denied`:
+> **重新建置前，先關掉正在執行的 `WalmartPDF.exe`。** 執行中的程式會鎖住 `dist\WalmartPDF.exe`，
+> PyInstaller 會失敗並出現 `PermissionError: [WinError 5] 存取被拒`：
 > ```powershell
 > Stop-Process -Name WalmartPDF -Force -ErrorAction SilentlyContinue
 > ```
 
-The first build takes a few minutes (`npm ci` plus creating the virtualenv);
-subsequent builds take about two minutes, since `.build-venv` is reused.
+第一次建置需要幾分鐘（`npm ci` 加上建立虛擬環境）；之後會重複使用 `.build-venv`，大約兩分鐘。
 
-**Rebuild after any change.** The frontend inside the executable is a snapshot of
-`frontend/dist` taken at build time — it does not update on its own. During
-development use `start.bat` instead, which gives you hot reload, and package once
-the change is final.
+**有任何修改都要重新建置。** 執行檔裡的前端是建置當下 `frontend/dist` 的快照，不會自己更新。開發時請用 `start.bat` 享有熱重載，確定改好了再打包。
 
-### How the packaged app differs from dev mode
+### 打包版與開發模式的差異
 
-| | Dev mode (`start.bat`) | Packaged (`WalmartPDF.exe`) |
+| | 開發模式（`start.bat`） | 打包版（`WalmartPDF.exe`） |
 | :--- | :--- | :--- |
-| Processes | Two (Vite `5173` + FastAPI `8000`) | One, serving API and UI on the same port |
-| Frontend | Vite dev server, hot reload | Pre-built static files served by FastAPI |
-| Port | Fixed `5173` / `8000` | Prefers `8000`, falls back to any free port |
-| Working data | `backend/data/workspaces` | `%LOCALAPPDATA%\WalmartPDF\workspaces` |
+| 行程 | 兩個（Vite `5173` + FastAPI `8000`） | 一個，API 與介面共用同一個 port |
+| 前端 | Vite 開發伺服器，支援熱重載 | 由 FastAPI 提供預先建置好的靜態檔案 |
+| Port | 固定 `5173` / `8000` | 優先使用 `8000`，被占用時改用任一可用 port |
+| 工作資料 | `backend/data/workspaces` | `%LOCALAPPDATA%\WalmartPDF\workspaces` |
 
 ---
 
-## Architecture Decisions (ADR)
+## 架構決策紀錄 ADR
 
-The key design choices behind walmart version of iLovePDF are documented in the [docs/adr](docs/adr) directory:
+walmart version of iLovePDF 的主要設計決策都記錄在 [docs/adr](docs/adr)（英文）：
 
-- [ADR 0001: Server-side Thumbnail Rendering with PyMuPDF](docs/adr/0001-server-side-thumbnail-rendering-with-pymupdf.md)
-- [ADR 0002: Ephemeral Local Session Storage without Database](docs/adr/0002-ephemeral-local-session-storage.md)
-- [ADR 0003: Tech Stack Selection: FastAPI and React](docs/adr/0003-tech-stack-fastapi-react.md)
-- [ADR 0004: One-Command Startup Script for Local Development](docs/adr/0004-one-command-startup-script.md)
+- [ADR 0001：使用 PyMuPDF 在伺服器端渲染縮圖](docs/adr/0001-server-side-thumbnail-rendering-with-pymupdf.md)
+- [ADR 0002：不使用資料庫的本機暫存工作區](docs/adr/0002-ephemeral-local-session-storage.md)
+- [ADR 0003：技術選型：FastAPI 與 React](docs/adr/0003-tech-stack-fastapi-react.md)
+- [ADR 0004：本機開發的一鍵啟動腳本](docs/adr/0004-one-command-startup-script.md)
 
 ---
 
-## Contributing
+## 參與貢獻
 
-- **🐛 [Report Issues](https://github.com/rowing195/walmart-ver.-of-iLovePDF/issues)**: Submit bugs found or log feature requests.
-- **💡 [Submit Pull Requests](https://github.com/rowing195/walmart-ver.-of-iLovePDF/pulls)**: Review open PRs, and submit your own PRs.
+- **🐛 [回報問題](https://github.com/rowing195/walmart-ver.-of-iLovePDF/issues)**：回報 bug 或提出功能需求。
+- **💡 [提交 Pull Request](https://github.com/rowing195/walmart-ver.-of-iLovePDF/pulls)**：審閱現有的 PR，或送出你自己的 PR。
 
 <details closed>
-<summary>Contributing Guidelines</summary>
+<summary>貢獻流程</summary>
 
-1. **Fork the Repository**: Start by forking the project repository to your github account.
-2. **Clone Locally**: Clone the forked repository to your local machine using a git client.
+1. **Fork 專案**：先把專案 fork 到你的 GitHub 帳號。
+2. **複製到本機**：用 git 把 fork 後的專案複製到你的電腦。
    ```sh
    git clone https://github.com/rowing195/walmart-ver.-of-iLovePDF
    ```
-3. **Create a New Branch**: Always work on a new branch, giving it a descriptive name.
+3. **建立新分支**：每次都在新分支上工作，並取個清楚的名字。
    ```sh
    git checkout -b new-feature-x
    ```
-4. **Make Your Changes**: Develop and test your changes locally.
-5. **Commit Your Changes**: Commit with a clear message describing your updates.
+4. **進行修改**：在本機開發並測試。
+5. **提交修改**：用清楚描述改動的訊息提交。
    ```sh
    git commit -m 'Implemented new feature x.'
    ```
-6. **Push to github**: Push the changes to your forked repository.
+6. **推送到 GitHub**：把修改推送到你 fork 的專案。
    ```sh
    git push origin new-feature-x
    ```
-7. **Submit a Pull Request**: Create a PR against the original project repository.
-8. **Review**: Once your PR is reviewed and approved, it will be merged.
+7. **送出 Pull Request**：對原始專案建立 PR。
+8. **審閱**：PR 經過審閱並核准後就會合併。
 
 </details>
 
 <details closed>
-<summary>Contributor Graph</summary>
+<summary>貢獻者</summary>
 <br>
 <p align="left">
    <a href="https://github.com/rowing195/walmart-ver.-of-iLovePDF/graphs/contributors">
@@ -652,21 +637,21 @@ The key design choices behind walmart version of iLovePDF are documented in the 
 
 ---
 
-## License
+## 授權
 
-walmart version of iLovePDF is protected under the [MIT](LICENSE) License.
+walmart version of iLovePDF 採用 [MIT](LICENSE) 授權。
 
 ---
 
-## Acknowledgments
+## 致謝
 
-- Inspired by [iLovePDF](https://www.ilovepdf.com/); this project is an independent clone and is not affiliated with it.
-- [PyMuPDF](https://github.com/pymupdf/PyMuPDF) for PDF parsing, rendering, and assembly.
-- [FastAPI](https://github.com/fastapi/fastapi) and [Uvicorn](https://github.com/encode/uvicorn) for the backend.
-- [dnd kit](https://github.com/clauderic/dnd-kit) for sortable drag-and-drop.
-- [Lucide](https://github.com/lucide-icons/lucide) for icons.
-- [PyInstaller](https://github.com/pyinstaller/pyinstaller) for the single-file Windows build.
+- 靈感來自 [iLovePDF](https://www.ilovepdf.com/)；本專案是獨立的仿作，與其沒有任何關係。
+- [PyMuPDF](https://github.com/pymupdf/PyMuPDF)：PDF 解析、渲染與組合。
+- [FastAPI](https://github.com/fastapi/fastapi) 與 [Uvicorn](https://github.com/encode/uvicorn)：後端。
+- [dnd kit](https://github.com/clauderic/dnd-kit)：拖曳排序。
+- [Lucide](https://github.com/lucide-icons/lucide)：圖示。
+- [PyInstaller](https://github.com/pyinstaller/pyinstaller)：打包成單一 Windows 執行檔。
 
-<div align="left"><a href="#top">Back to top</a></div>
+<div align="left"><a href="#top">回到頂端</a></div>
 
 ---
