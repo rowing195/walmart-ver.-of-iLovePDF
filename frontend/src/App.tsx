@@ -237,13 +237,17 @@ export function App() {
               <span className="font-mono text-[11px] text-[#6b7280]">/ workspace / {sessionId.slice(0, 8)}</span>
             )}
           </div>
-          {sessionId ? (
-            <div className="font-mono text-[11px] text-[#6b7280]">
-              TTL <b className="text-[#3b9eff]">{formatCountdown(secondsLeft)}</b> remaining
-            </div>
-          ) : (
-            <div className="font-mono text-[11px] text-[#6b7280]">v{version}</div>
-          )}
+          <div className="flex items-center gap-3 font-mono text-[11px] text-[#6b7280]">
+            {sessionId && (
+              <>
+                <span>
+                  TTL <b className="text-[#3b9eff]">{formatCountdown(secondsLeft)}</b> remaining
+                </span>
+                <span className="h-3 w-px bg-[#2a2e35]" />
+              </>
+            )}
+            <span>v{version}</span>
+          </div>
         </header>
 
         {/* Toast Notification Banner: fixed overlay so it never shifts layout when it appears/disappears */}
