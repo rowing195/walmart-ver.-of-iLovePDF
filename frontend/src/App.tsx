@@ -5,7 +5,7 @@ import { ActionsToolbar } from './components/Toolbar/ActionsToolbar';
 import { Sidebar } from './components/Sidebar';
 import { PageNode } from './types';
 import { uploadFile, exportPdf, exportImagesZip } from './services/api';
-import { AlertCircle, CheckCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle, Upload } from 'lucide-react';
 
 const WORKSPACE_TTL_SECONDS = 3600;
 
@@ -22,6 +22,7 @@ export function App() {
   const [isExporting, setIsExporting] = useState(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [secondsLeft, setSecondsLeft] = useState(WORKSPACE_TTL_SECONDS);
+  const [isDraggingFiles, setIsDraggingFiles] = useState(false);
   const sessionStartRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -201,10 +202,29 @@ export function App() {
     }
   };
 
+  const handleFileDragOver = (e: React.DragEvent) => {
+    // The empty-state uploader handles its own drops.
+    if (pageNodes.length === 0 || !e.dataTransfer.types.includes('Files')) return;
+    e.preventDefault();
+    setIsDraggingFiles(true);
+  };
+
+  const handleFileDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingFiles(false);
+    if (e.dataTransfer.files.length > 0) {
+      handleFilesSelected(e.dataTransfer.files);
+    }
+  };
+
   const selectedCount = pageNodes.filter((n) => n.selected).length;
 
   return (
-    <div className="flex h-screen overflow-x-hidden bg-[#17191d] text-[#c7cbd1]">
+    <div
+      className="flex h-screen overflow-x-hidden bg-[#17191d] text-[#c7cbd1]"
+      onDragEnter={handleFileDragOver}
+      onDragOver={handleFileDragOver}
+    >
       <Sidebar />
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -287,6 +307,23 @@ export function App() {
           </div>
         )}
       </div>
+
+      {isDraggingFiles && (
+        <div
+          className="fixed inset-0 z-[60] bg-[#0b0d10]/80 p-6"
+          onDragOver={(e) => e.preventDefault()}
+          onDragLeave={() => setIsDraggingFiles(false)}
+          onDrop={handleFileDrop}
+        >
+          <div className="pointer-events-none flex h-full flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-[#3b9eff] text-center">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#3b9eff]/10 text-[#3b9eff]">
+              <Upload className="h-11 w-11" />
+            </div>
+            <h3 className="text-2xl font-semibold text-[#e5e7eb]">Drop to add PDF or image files</h3>
+            <p className="text-sm text-[#8b929c]">New pages are added to the end of the canvas.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
