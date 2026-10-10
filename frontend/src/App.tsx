@@ -6,6 +6,7 @@ import { Sidebar } from './components/Sidebar';
 import { PageNode } from './types';
 import { uploadFile, exportPdf, exportImagesZip } from './services/api';
 import { AlertCircle, CheckCircle, Upload } from 'lucide-react';
+import { version } from '../package.json';
 
 const WORKSPACE_TTL_SECONDS = 3600;
 
@@ -241,7 +242,7 @@ export function App() {
               TTL <b className="text-[#3b9eff]">{formatCountdown(secondsLeft)}</b> remaining
             </div>
           ) : (
-            <div className="text-[11px] text-[#6b7280]">Powered by PyMuPDF</div>
+            <div className="font-mono text-[11px] text-[#6b7280]">v{version}</div>
           )}
         </header>
 
